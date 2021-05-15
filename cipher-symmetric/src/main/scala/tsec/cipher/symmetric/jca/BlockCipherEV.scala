@@ -13,6 +13,12 @@ import tsec.keygen.symmetric._
   *
   */
 private[tsec] trait JCAKeyGen[A] extends SymmetricKeyGenAPI[A, SecretKey] {
+  private def keySizeBitsForInit(implicit B: BlockCipher[A]): Int = {
+    if ( B.cipherName.equals("DES") ) {
+      return 56
+    }
+    return B.keySizeBytes * 8
+  }
   private def keySizeBits(implicit B: BlockCipher[A]) = B.keySizeBytes * 8
 
   private def generator(implicit B: BlockCipher[A]): KG = KG.getInstance(B.cipherName)
@@ -33,7 +39,7 @@ private[tsec] trait JCAKeyGen[A] extends SymmetricKeyGenAPI[A, SecretKey] {
   private[tsec] object impl {
     def unsafeGenerateKey(implicit B: BlockCipher[A]): SecretKey[A] = {
       val gen = generator
-      gen.init(keySizeBits)
+      gen.init(keySizeBitsForInit)
       SecretKey[A](gen.generateKey())
     }
 

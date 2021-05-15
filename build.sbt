@@ -140,7 +140,6 @@ lazy val passwordHasherLibs = libraryDependencies ++= Seq(
 )
 
 lazy val bouncyLib = libraryDependencies += Libraries.BC
-
 lazy val jwtCommonLibs = libraryDependencies ++= Seq(
   Libraries.circeCore,
   Libraries.circeGeneric,
@@ -179,6 +178,7 @@ lazy val root = Project(id = "tsec", base = file("."))
     // bench,
     // examples,
     // libsodium
+    SimleiDev
   ).settings(commonSettings, publishSettings, releaseSettings, noPublishSettings)
 
 lazy val common = Project(id = "tsec-common", base = file("common"))
@@ -289,6 +289,7 @@ lazy val bench = Project(id = "tsec-bench", base = file("bench"))
   .settings(noPublishSettings)
   .enablePlugins(JmhPlugin)
 
+
 lazy val examples = Project(id = "tsec-examples", base = file("examples"))
   .settings(commonSettings)
   .settings(jwtCommonLibs)
@@ -350,7 +351,7 @@ lazy val microsite = Project(id = "microsite", base = file("docs"))
   .settings(micrositeSettings)
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(
+.dependsOn(
     common,
     messageDigests,
     cipherCore,
@@ -381,3 +382,38 @@ lazy val noPublishSettings = {
     publishTo := None
   )
 }
+
+
+// --------- SIMLEI_DEV stuff
+
+val scoptLib         = "com.github.scopt" %% "scopt" % "4.0.0"
+
+val mainClassNameBCI = "tsec.simleidev.SimleiDev"
+val mainClassNameCLI = mainClassNameBCI
+
+lazy val SimleiDev = Project(id = "SimleiDev", base = file("simlei_dev"))
+  .settings(commonSettings)
+  .settings(jwtCommonLibs)
+  .settings(bouncyLib)
+  .settings(libraryDependencies += scoptLib)
+  .settings(passwordHasherLibs)
+  .settings(http4sDeps)
+  .settings(
+    Compile / packageBin / mainClass := Some(mainClassNameCLI),
+    Compile / run / mainClass := Some(mainClassNameBCI),
+    assembly / mainClass := Some(mainClassNameCLI),
+    assembly / assemblyJarName := "assembled_app.jar"
+  )
+  .dependsOn(common % "compile->compile;test->test")
+  .dependsOn(
+    symmetricCipher,
+    mac,
+    messageDigests,
+    signatures,
+    jwtMac,
+    jwtSig,
+    passwordHashers,
+    bouncyHash,
+    bouncyCipher
+  )
+  .settings(noPublishSettings)
