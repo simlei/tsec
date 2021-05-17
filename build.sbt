@@ -173,7 +173,7 @@ lazy val root = Project(id = "tsec", base = file("."))
     jwtSig,
     passwordHashers,
     http4s,
-    microsite,
+    // microsite,
     oauth2,
     // bench,
     // examples,
@@ -350,7 +350,6 @@ lazy val microsite = Project(id = "microsite", base = file("docs"))
   .settings(commonSettings, noPublishSettings)
   .settings(micrositeSettings)
   .enablePlugins(MicrositesPlugin)
-  .enablePlugins(TutPlugin)
 .dependsOn(
     common,
     messageDigests,
