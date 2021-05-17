@@ -10,7 +10,7 @@ trait ManagedRandom {
     * [[https://tersesystems.com/2015/12/17/the-right-way-to-use-securerandom/]]
     */
   private[tsec] val cachedRand: SecureRandom = {
-    val r = SecureRandom.getInstance(ManagedRandom.UnixURandom)
+    val r = SecureRandom.getInstanceStrong()
     r.nextBytes(new Array[Byte](20)) //Force reseed
     r
   }
