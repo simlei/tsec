@@ -74,18 +74,6 @@ lazy val releaseSettings = {
   )
 }
 
-lazy val micrositeSettings = Seq(
-  micrositeName := "TSec",
-  micrositeBaseUrl := "/tsec",
-  micrositeDescription := "A Type-Safe General Cryptography Library on the JVM",
-  micrositeAuthor := "Jose Cardona",
-  micrositeHomepage := "https://jmcardon.github.io/tsec/",
-  micrositeGithubOwner := "jmcardon",
-  micrositeGithubRepo := "tsec",
-  micrositeDocumentationUrl := "/tsec/docs/symmetric.html",
-  micrositeGitterChannel := false,
-  micrositeGithubToken := sys.env.get("GITHUB_TOKEN")
-)
 
 def scalacOptionsForVersion(scalaVersion: String): Seq[String] = {
   val defaultOpts = Seq(
@@ -346,24 +334,6 @@ lazy val libsodium = Project(id = "tsec-libsodium", base = file("tsec-libsodium"
   .settings(releaseSettings)
   .settings(publishSettings)
 
-lazy val microsite = Project(id = "microsite", base = file("docs"))
-  .settings(commonSettings, noPublishSettings)
-  .settings(micrositeSettings)
-  .enablePlugins(MicrositesPlugin)
-.dependsOn(
-    common,
-    messageDigests,
-    cipherCore,
-    jwtCore,
-    symmetricCipher,
-    mac,
-    signatures,
-    jwtMac,
-    jwtSig,
-    passwordHashers,
-    http4s,
-    examples
-  )
 
 lazy val publishSettings = Seq(
   homepage := Some(url("https://github.com/jmcardon/tsec")),
